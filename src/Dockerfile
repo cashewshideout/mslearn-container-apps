@@ -9,9 +9,9 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG configuration=Release
 WORKDIR /src
 COPY ["learn-containerapps.csproj", "src/"]
-RUN dotnet restore "learn-containerapps.csproj"
+RUN dotnet restore "src/learn-containerapps.csproj"
 COPY . .
-WORKDIR "/src"
+WORKDIR "/src/src"
 RUN dotnet build "learn-containerapps.csproj" -c $configuration -o /app/build
 
 FROM build AS publish
