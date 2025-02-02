@@ -1,0 +1,26 @@
+
+name: ContainerBuild
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - uses: azure/docker-login@v1
+              name: Docker Login
+              with:
+                login-server: ${{ env.MSLEARN_CONTAINER_REGISTRY }}
+                username: ${{ env.MSLEARN_CONTAINER_REGISTRY_USERNAME }}
+                password: ${{ secrets.MSLEARNCRSECRET }}
+
+            - name: Push Docker image to Azure Container Registry    
+              run: |
+                docker build src -t ${{env.MSLEARN_CONTAINER_REGISTRY}}/aspnetcorecontainer:latest -t ${{ env.MSLEARN_CONTAINER_REGISTRY }}/aspnetcorecontainer:${{ github.sha }}
+                docker push ${{ env.MSLEARN_CONTAINER_REGISTRY }}/aspnetcorecontainer:${{ github.sha }}
+                docker push  ${{ env.MSLEARN_CONTAINER_REGISTRY }}/aspnetcorecontainer:latest
