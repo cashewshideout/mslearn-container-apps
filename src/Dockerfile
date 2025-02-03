@@ -13,6 +13,7 @@ RUN dotnet build "learn-containerapps.csproj" -c $configuration -o /app/build
 
 FROM build AS publish
 ARG configuration=Release
+WORKDIR /src
 RUN dotnet publish "learn-containerapps.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
