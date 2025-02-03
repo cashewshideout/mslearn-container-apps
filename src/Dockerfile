@@ -1,18 +1,16 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-WORKDIR /app
-EXPOSE 5000
 
-ENV ASPNETCORE_URLS=http://+:5000
-
-USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG configuration=Release
-RUN dotnet restore "learn-containerapps.csproj"
-RUN dotnet build "learn-containerapps.csproj" -c $configuration -o /app/build
+WORKDIR /project
+COPY *.csproj ./
+RUN dotnet restore
+COPY . ./
+RUN dotnet build -c $configuration -o /app/build
 
 FROM build AS publish
 ARG configuration=Release
-RUN dotnet publish "learn-containerapps.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
+RUN dotnet publish -c $configuration -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
